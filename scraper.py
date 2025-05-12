@@ -10,11 +10,11 @@ from SavingOnDrive import SavingOnDrive
 
 nest_asyncio.apply()
 
-class TalabatGroceries:
+class GroceryScraper:
     def __init__(self, url):
         self.url = url
         self.base_url = "https://www.talabat.com"
-        print(f"Initialized TalabatGroceries with URL: {self.url}")
+        print(f"Initialized GroceryScraper with URL: {self.url}")
 
     async def get_general_link(self, page):
         print("Attempting to get general link")
@@ -294,11 +294,11 @@ class TalabatGroceries:
         return {"error": "Failed to extract categories after multiple attempts"}
 
 
-# class TalabatGroceries:
+# class GroceryScraper:
 #     def __init__(self, url):
 #         self.url = url
 #         self.base_url = "https://www.talabat.com"
-#         print(f"Initialized TalabatGroceries with URL: {self.url}")
+#         print(f"Initialized GroceryScraper with URL: {self.url}")
 
 #     async def get_general_link(self, page):
 #         print("Attempting to get general link")
