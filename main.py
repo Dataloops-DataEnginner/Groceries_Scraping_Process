@@ -9,7 +9,7 @@ import argparse
 from typing import Dict, List
 import pandas as pd
 from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeoutError
-from SavingOnDrive import SavingOnDrive
+from drive import SaveOnDrive
 import logging
 from datetime import datetime
 from retry import retry
@@ -21,13 +21,13 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
-class TalabatGroceries:
+class GroceryScraper:
     def __init__(self, url, browser, main_scraper):
         self.url = url
         self.base_url = "https://www.talabat.com"
         self.browser = browser
         self.main_scraper = main_scraper
-        print(f"Initialized TalabatGroceries with URL: {self.url}")
+        print(f"Initialized GroceryScraper with URL: {self.url}")
 
     async def get_general_link(self, page):
         print("Attempting to get general link")
@@ -551,7 +551,7 @@ class MainScraper:
 
     def __init__(self):
         self.output_dir = "output"
-        self.drive_uploader = SavingOnDrive(credentials_json=None)  # No Google Drive credentials
+        self.drive_uploader = SaveOnDrive(credentials_json=None)  # No Google Drive credentials
         os.makedirs(self.output_dir, exist_ok=True)
         self.blob_service_client = None  # No Azure Blob Storage client
         self.container_name = "scraper-progress"
@@ -1028,7 +1028,7 @@ class MainScraper:
             print(f"Processing grocery {grocery_num}/{len(groceries_on_page)}: {grocery_title} (link: {grocery_link})")
 
             grocery_page = await browser.new_page()
-            talabat_grocery = TalabatGroceries(grocery_link, browser, self)
+            talabat_grocery = GroceryScraper(grocery_link, browser, self)
             grocery_details = await talabat_grocery.extract_categories(grocery_page)
             all_area_results[grocery_title] = {
                 "grocery_link": grocery_link,
@@ -1069,7 +1069,7 @@ class MainScraper:
                 self.save_scraped_progress()
 
                 grocery_page = await browser.new_page()
-                talabat_grocery = TalabatGroceries(grocery_link, browser, self)
+                talabat_grocery = GroceryScraper(grocery_link, browser, self)
                 grocery_details = await talabat_grocery.extract_categories(grocery_page)
                 all_area_results[grocery_title] = {
                     "grocery_link": grocery_link,
@@ -1231,7 +1231,7 @@ if __name__ == "__main__":
 # from typing import Dict, List
 # import pandas as pd
 # from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeoutError
-# from SavingOnDrive import SavingOnDrive
+# from drive import SaveOnDrive
 # import logging
 # from datetime import datetime
 # from retry import retry
@@ -1243,13 +1243,13 @@ if __name__ == "__main__":
 #     format='%(asctime)s - %(levelname)s - %(message)s'
 # )
 
-# class TalabatGroceries:
+# class GroceryScraper:
 #     def __init__(self, url, browser, main_scraper):
 #         self.url = url
 #         self.base_url = "https://www.talabat.com"
 #         self.browser = browser
 #         self.main_scraper = main_scraper
-#         print(f"Initialized TalabatGroceries with URL: {self.url}")
+#         print(f"Initialized GroceryScraper with URL: {self.url}")
 
 #     async def get_general_link(self, page):
 #         print("Attempting to get general link")
@@ -1794,18 +1794,18 @@ if __name__ == "__main__":
 #         credentials_json = os.environ.get('TALABAT_GCLOUD_KEY_JSON')
 #         if not credentials_json:
 #             logging.warning("TALABAT_GCLOUD_KEY_JSON is not set. Google Drive uploads will fail.")
-#             self.drive_uploader = SavingOnDrive(credentials_json=None)
+#             self.drive_uploader = SaveOnDrive(credentials_json=None)
 #         else:
 #             try:
 #                 credentials_dict = json.loads(credentials_json)
 #                 if not credentials_dict.get('type') == 'service_account':
 #                     logging.warning("TALABAT_GCLOUD_KEY_JSON is not a valid service account key. Google Drive uploads will fail.")
-#                     self.drive_uploader = SavingOnDrive(credentials_json=None)
+#                     self.drive_uploader = SaveOnDrive(credentials_json=None)
 #                 else:
-#                     self.drive_uploader = SavingOnDrive(credentials_json=credentials_json)
+#                     self.drive_uploader = SaveOnDrive(credentials_json=credentials_json)
 #             except json.JSONDecodeError as e:
 #                 logging.warning(f"TALABAT_GCLOUD_KEY_JSON is invalid JSON: {str(e)}. Google Drive uploads will fail.")
-#                 self.drive_uploader = SavingOnDrive(credentials_json=None)
+#                 self.drive_uploader = SaveOnDrive(credentials_json=None)
         
 #         os.makedirs(self.output_dir, exist_ok=True)
 #         self.current_progress = self.load_current_progress()
@@ -2290,7 +2290,7 @@ if __name__ == "__main__":
 #             print(f"Processing grocery {grocery_num}/{len(groceries_on_page)}: {grocery_title} (link: {grocery_link})")
 
 #             grocery_page = await browser.new_page()
-#             talabat_grocery = TalabatGroceries(grocery_link, browser, self)
+#             talabat_grocery = GroceryScraper(grocery_link, browser, self)
 #             grocery_details = await talabat_grocery.extract_categories(grocery_page)
 #             all_area_results[grocery_title] = {
 #                 "grocery_link": grocery_link,
@@ -2333,7 +2333,7 @@ if __name__ == "__main__":
 #                 self.save_scraped_progress()
 
 #                 grocery_page = await browser.new_page()
-#                 talabat_grocery = TalabatGroceries(grocery_link, browser, self)
+#                 talabat_grocery = GroceryScraper(grocery_link, browser, self)
 #                 grocery_details = await talabat_grocery.extract_categories(grocery_page)
 #                 all_area_results[grocery_title] = {
 #                     "grocery_link": grocery_link,
