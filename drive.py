@@ -7,7 +7,7 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from retry import retry
 
-class SavingOnDrive:
+class SaveOnDrive:
     """Class to handle uploading files to Google Drive with date-based folders"""
     
     def __init__(self, credentials_json=None):
